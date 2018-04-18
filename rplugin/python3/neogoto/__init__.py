@@ -14,6 +14,11 @@ DEFAULT_MAPPING = {
         'dirs': ['Source', 'source', 'src'],
         'endings': ['cpp', 'c'],
     },
+    'test': {
+        'dirs': ['UnitTest', 'test'],
+        'endings': ['cpp', 'c'],
+        'prefix': 'Test',
+    },
 }
 
 
@@ -71,6 +76,14 @@ class Neogoto:
     @neovim.command(name='NeogotoSource', sync=True)
     def goto_source(self):
         mapping = DEFAULT_MAPPING.get('source')
+        current_path = self._nvim.current_path
+
+        new_file = get_switch_file(current_path, mapping)
+        self._nvim.goto_file(str(new_file))
+
+    @neovim.command(name='NeogotoTest', sync=True)
+    def goto_test(self):
+        mapping = DEFAULT_MAPPING.get('test')
         current_path = self._nvim.current_path
 
         new_file = get_switch_file(current_path, mapping)

@@ -2,7 +2,7 @@ import os
 import pathlib
 
 import pytest
-import neovim
+
 from neogoto import NvimWrapper, iterate_parents, get_switch_file
 
 
