@@ -71,7 +71,7 @@ class Neogoto:
         current_path = self._nvim.current_path
 
         new_file = get_switch_file(current_path, mapping)
-        self._nvim.goto_file(str(new_file))
+        self._nvim.goto_file(new_file)
 
     @neovim.command(name='NeogotoSource', sync=True)
     def goto_source(self):
@@ -79,7 +79,7 @@ class Neogoto:
         current_path = self._nvim.current_path
 
         new_file = get_switch_file(current_path, mapping)
-        self._nvim.goto_file(str(new_file))
+        self._nvim.goto_file(new_file)
 
     @neovim.command(name='NeogotoTest', sync=True)
     def goto_test(self):
@@ -87,4 +87,4 @@ class Neogoto:
         current_path = self._nvim.current_path
 
         new_file = get_switch_file(current_path, mapping)
-        self._nvim.goto_file(str(new_file))
+        self._nvim.goto_file(new_file)
