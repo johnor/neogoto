@@ -15,7 +15,7 @@ DEFAULT_MAPPING = {
         'endings': ['cpp', 'c'],
     },
     'test': {
-        'dirs': ['UnitTest', 'test'],
+        'dirs': ['UnitTest', 'UnitTests', 'test'],
         'endings': ['cpp', 'c'],
         'prefix': 'Test',
     },
