@@ -18,10 +18,14 @@ def basic_fs(fs):
     fs.create_file("/data/repo_root/Include/lib1/lib1_file2.hpp")
     fs.create_file("/data/repo_root/Source/lib1/lib1_file2.cpp")
 
+    fs.create_file("/data/repo_root/Include/file1.h")
+    fs.create_file("/data/repo_root/Source/file1.cpp")
+
     fs.create_file("/data/repo_root/Source/lib2/lib2_file1.h")
     fs.create_file("/data/repo_root/Source/lib2/lib2_file1.cpp")
 
     fs.create_file("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp")
+    fs.create_file("/data/repo_root/UnitTest/Testfile1.cpp")
 
 
 @pytest.fixture
@@ -84,6 +88,12 @@ def test_get_switch_file_with_different_dir(header_mapping):
 
 
 def test_get_switch_file_unittest(unittest_mapping):
-    header = get_switch_file(pathlib.Path("/data/repo_root/Source/lib2/lib2_file1.cpp"), unittest_mapping)
-    assert pathlib.Path("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp") == header
+    testfile = get_switch_file(pathlib.Path("/data/repo_root/Source/lib2/lib2_file1.cpp"), unittest_mapping)
+    assert pathlib.Path("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp") == testfile
+
+    testfile = get_switch_file(pathlib.Path("/data/repo_root/Include/lib2/lib2_file1.h"), unittest_mapping)
+    assert pathlib.Path("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp") == testfile
+
+    testfile = get_switch_file(pathlib.Path("/data/repo_root/Include/file1.h"), unittest_mapping)
+    assert pathlib.Path("/data/repo_root/UnitTest/Testfile1.cpp") == testfile
 

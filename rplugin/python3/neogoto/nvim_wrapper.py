@@ -33,5 +33,8 @@ class NvimWrapper:
         else:
             self.print_message("Unknown path: {}".format(file_path))
 
-    def print_message(self, msg):
+    def print_message(self, msg: str):
         self._nvim.command('echo \'{}\''.format(msg))
+
+    def echom(self, msg: str):
+        self._nvim.command('echom \"{}\"'.format(msg))
