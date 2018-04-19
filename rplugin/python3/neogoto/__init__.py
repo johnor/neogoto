@@ -79,35 +79,24 @@ class Neogoto:
 
     @neovim.command(name='NeogotoHeader', sync=True, nargs='?')
     def goto_header(self, args):
-        nvim_debug = None
-        if args and args[0] == 'debug':
-            nvim_debug = self._nvim
-
         mapping = DEFAULT_MAPPING.get('header')
-        current_path = self._nvim.current_path
-
-        new_file = get_switch_file(current_path, mapping, nvim_debug)
-        self._nvim.goto_file(new_file)
+        self._goto(mapping, args)
 
     @neovim.command(name='NeogotoSource', sync=True, nargs='?')
     def goto_source(self, args):
-        nvim_debug = None
-        if args and args[0] == 'debug':
-            nvim_debug = self._nvim
-
         mapping = DEFAULT_MAPPING.get('source')
-        current_path = self._nvim.current_path
-
-        new_file = get_switch_file(current_path, mapping, nvim_debug)
-        self._nvim.goto_file(new_file)
+        self._goto(mapping, args)
 
     @neovim.command(name='NeogotoTest', sync=True, nargs='?')
     def goto_test(self, args):
+        mapping = DEFAULT_MAPPING.get('test')
+        self._goto(mapping, args)
+
+    def _goto(self, mapping, args):
         nvim_debug = None
         if args and args[0] == 'debug':
             nvim_debug = self._nvim
 
-        mapping = DEFAULT_MAPPING.get('test')
         current_path = self._nvim.current_path
 
         new_file = get_switch_file(current_path, mapping, nvim_debug)
