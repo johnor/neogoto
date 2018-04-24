@@ -9,15 +9,18 @@ DEFAULT_MAPPING = {
     'header': {
         'dirs': ['Include', 'include', 'Impl', 'impl'],
         'endings': ['hpp', 'h'],
+        'switch': 'source',
     },
     'source': {
         'dirs': ['Source', 'source', 'src'],
         'endings': ['cpp', 'c'],
+        'switch': 'header',
     },
     'test': {
         'dirs': ['UnitTest', 'UnitTests', 'test'],
         'endings': ['cpp', 'c'],
         'prefix': 'Test',
+        'switch': 'source',
     },
 }
 
@@ -72,6 +75,16 @@ def get_switch_file(file_path: pathlib.Path,
     return None
 
 
+def get_switch_mapping(file_path: pathlib.Path, full_mapping: dict):
+    filename = file_path.name
+    for key, mapping in full_mapping.items():
+        endings = tuple(mapping.get('endings', []))
+        if filename.endswith(endings):
+            switch_type = mapping.get('switch')
+            return full_mapping.get(switch_type, 'source')
+    return None
+
+
 @neovim.plugin
 class Neogoto:
     def __init__(self, nvim):
@@ -91,6 +104,15 @@ class Neogoto:
     def goto_test(self, args):
         mapping = DEFAULT_MAPPING.get('test')
         self._goto(mapping, args)
+
+    @neovim.command(name='NeogotoSwitch', sync=True, nargs='?')
+    def goto_switch(self, args):
+        current_path = self._nvim.current_path
+        mapping = get_switch_mapping(current_path, DEFAULT_MAPPING)
+        if mapping:
+            self._goto(mapping, args)
+        else:
+            self._nvim.print_message("Could not find mapping for current file")
 
     def _goto(self, mapping, args):
         nvim_debug = None

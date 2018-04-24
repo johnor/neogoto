@@ -3,7 +3,7 @@ import pathlib
 
 import pytest
 
-from neogoto import NvimWrapper, iterate_parents, get_switch_file
+from neogoto import NvimWrapper, iterate_parents, get_switch_file, DEFAULT_MAPPING, get_switch_mapping
 
 
 @pytest.fixture
@@ -45,6 +45,10 @@ def unittest_mapping(basic_fs):
         'prefix': 'Test',
     }
     return mapping
+
+@pytest.fixture
+def full_mapping(basic_fs):
+    return DEFAULT_MAPPING
 
 
 def test_filesystem(basic_fs):
@@ -97,3 +101,13 @@ def test_get_switch_file_unittest(unittest_mapping):
     testfile = get_switch_file(pathlib.Path("/data/repo_root/Include/file1.h"), unittest_mapping)
     assert pathlib.Path("/data/repo_root/UnitTest/Testfile1.cpp") == testfile
 
+
+def test_get_switch_mapping_source_header(full_mapping):
+    switch_mapping = get_switch_mapping(pathlib.Path("/data/repo_root/Source/lib2/lib2_file1.cpp"),
+                                        full_mapping)
+    assert 'h' in switch_mapping.get('endings')
+
+    switch_mapping = get_switch_mapping(pathlib.Path("/data/repo_root/Include/lib2/lib2_file1.h"),
+                                        full_mapping)
+    assert 'cpp' in switch_mapping.get('endings')
+    assert 'Source' in switch_mapping.get('dirs')
