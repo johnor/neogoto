@@ -46,7 +46,7 @@ def _debug(nvim: NvimWrapper, msg: str):
 
 def get_switch_file(file_path: pathlib.Path,
                     mapping: dict,
-                    nvim: NvimWrapper) -> pathlib.Path:
+                    nvim: NvimWrapper=None) -> pathlib.Path:
     filename = os.path.basename(str(file_path))
     filename_root, filename_ext = os.path.splitext(filename)
 
