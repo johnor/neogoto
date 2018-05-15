@@ -17,7 +17,10 @@ DEFAULT_MAPPING = {
         'switch': 'header',
     },
     'test': {
-        'dirs': ['UnitTest', 'UnitTests', 'test'],
+        'dirs': [
+            'UnitTest', 'UnitTests', 'test', 'UnitTest/Source',
+            'UnitTests/Source'
+        ],
         'endings': ['cpp', 'c'],
         'prefix': 'Test',
         'switch': 'source',
