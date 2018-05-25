@@ -3,7 +3,8 @@ import pathlib
 
 import pytest
 
-from neogoto import NvimWrapper, iterate_parents, get_switch_file, DEFAULT_MAPPING, get_switch_mapping
+from neogoto import NvimWrapper, iterate_parents, get_switch_file, DEFAULT_MAPPING, get_switch_mapping, \
+    get_current_mapping
 
 
 @pytest.fixture
@@ -102,12 +103,28 @@ def test_get_switch_file_unittest(unittest_mapping):
     assert pathlib.Path("/data/repo_root/UnitTest/Testfile1.cpp") == testfile
 
 
+def test_get_current_mapping(full_mapping):
+    current_mapping = get_current_mapping(pathlib.Path("/data/repo_root/Source/lib2/lib2_file1.cpp"),
+                                          full_mapping)
+    assert current_mapping == full_mapping['source']
+
+    current_mapping = get_current_mapping(pathlib.Path("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp"),
+                                          full_mapping)
+    assert current_mapping == full_mapping['test']
+
+
 def test_get_switch_mapping_source_header(full_mapping):
     switch_mapping = get_switch_mapping(pathlib.Path("/data/repo_root/Source/lib2/lib2_file1.cpp"),
                                         full_mapping)
-    assert 'h' in switch_mapping.get('endings')
+    assert switch_mapping == full_mapping['header']
 
     switch_mapping = get_switch_mapping(pathlib.Path("/data/repo_root/Include/lib2/lib2_file1.h"),
                                         full_mapping)
-    assert 'cpp' in switch_mapping.get('endings')
-    assert 'Source' in switch_mapping.get('dirs')
+    assert switch_mapping == full_mapping['source']
+
+
+def test_get_switch_mapping_test_file(full_mapping):
+    switch_mapping = get_switch_mapping(pathlib.Path("/data/repo_root/UnitTest/lib2/Testlib2_file1.cpp"),
+                                        full_mapping)
+    assert switch_mapping == full_mapping['source']
+

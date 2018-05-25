@@ -1,4 +1,6 @@
 import pathlib
+import queue
+
 import neovim
 import os
 
@@ -78,13 +80,31 @@ def get_switch_file(file_path: pathlib.Path,
     return None
 
 
-def get_switch_mapping(file_path: pathlib.Path, full_mapping: dict):
+# Tries to figure out the mapping for a file
+# A mapping is given a higher score if a prefix is set for a mapping and matches
+# This makes it possible to figure out if a file is a unit tests or not
+def get_current_mapping(file_path: pathlib.Path, full_mapping: dict) -> dict:
+    mapping_candidates = queue.PriorityQueue()
     filename = file_path.name
     for key, mapping in full_mapping.items():
         endings = tuple(mapping.get('endings', []))
         if filename.endswith(endings):
-            switch_type = mapping.get('switch')
-            return full_mapping.get(switch_type, 'source')
+            score = 1
+            prefix = mapping.get('prefix')
+            if prefix:
+                if filename.startswith(prefix):
+                    score += 1
+                else:
+                    score -= 1
+            mapping_candidates.put((-score, mapping))
+    return mapping_candidates.get()[1] if not mapping_candidates.empty() else None
+
+
+def get_switch_mapping(file_path: pathlib.Path, full_mapping: dict):
+    current_mapping = get_current_mapping(file_path, full_mapping)
+    if current_mapping:
+        switch_type = current_mapping.get('switch', 'source')
+        return full_mapping.get(switch_type)
     return None
 
 
