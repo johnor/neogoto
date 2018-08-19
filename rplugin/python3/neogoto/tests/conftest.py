@@ -17,4 +17,6 @@ def nvim_instance() -> neovim.Nvim:
     else:
         nvim = neovim.attach('socket', path=listen_address)
 
+    nvim.command('set noswapfile')
+
     yield nvim

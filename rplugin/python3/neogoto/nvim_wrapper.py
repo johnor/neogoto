@@ -38,3 +38,6 @@ class NvimWrapper:
 
     def echom(self, msg: str):
         self._nvim.command('echom \"{}\"'.format(msg))
+
+    def command(self, command: str):
+        self._nvim.command(command)

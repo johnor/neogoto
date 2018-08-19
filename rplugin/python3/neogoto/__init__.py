@@ -116,33 +116,64 @@ class Neogoto:
     @neovim.command(name='NeogotoHeader', sync=True, nargs='?')
     def goto_header(self, args):
         mapping = DEFAULT_MAPPING.get('header')
-        self._goto(mapping, args)
+        self._goto(mapping, nvim_debug=self._get_debug(args))
 
     @neovim.command(name='NeogotoSource', sync=True, nargs='?')
     def goto_source(self, args):
         mapping = DEFAULT_MAPPING.get('source')
-        self._goto(mapping, args)
+        self._goto(mapping, nvim_debug=self._get_debug(args))
 
     @neovim.command(name='NeogotoTest', sync=True, nargs='?')
     def goto_test(self, args):
         mapping = DEFAULT_MAPPING.get('test')
-        self._goto(mapping, args)
+        self._goto(mapping, nvim_debug=self._get_debug(args))
 
     @neovim.command(name='NeogotoSwitch', sync=True, nargs='?')
     def goto_switch(self, args):
+        self._switch(args, precmd=None)
+
+    @neovim.command(name='NeogotoSwitchSplitLeft', sync=True, nargs='?')
+    def goto_switch_split_left(self, args):
+        precmd = 'let cursplitright=&splitright | set nosplitright | vsplit | if cursplitright | set splitright | endif'
+        self._switch(args, precmd)
+
+    @neovim.command(name='NeogotoSwitchLeft', sync=True, nargs='?')
+    def goto_switch_left(self, args):
+        precmd = 'wincmd h'
+        self._switch(args, precmd)
+
+    @neovim.command(name='NeogotoSwitchSplitRight', sync=True, nargs='?')
+    def goto_switch_split_right(self, args):
+        precmd = 'let cursplitright=&splitright | set nosplitright | vsplit | wincmd l | if cursplitright | set splitright | endif'
+        self._switch(args, precmd)
+
+    @neovim.command(name='NeogotoSwitchRight', sync=True, nargs='?')
+    def goto_switch_right(self, args):
+        precmd = 'wincmd l'
+        self._switch(args, precmd)
+
+    def _switch(self, args, precmd=None):
         current_path = self._nvim.current_path
         mapping = get_switch_mapping(current_path, DEFAULT_MAPPING)
         if mapping:
-            self._goto(mapping, args)
+            self._goto(mapping, precmd=precmd, nvim_debug=self._get_debug(args))
         else:
             self._nvim.print_message("Could not find mapping for current file")
 
-    def _goto(self, mapping, args):
+    def _get_debug(self, args):
         nvim_debug = None
         if args and args[0] == 'debug':
             nvim_debug = self._nvim
+        return nvim_debug
 
+    def _goto(self, mapping, nvim_debug=None, precmd=None):
         current_path = self._nvim.current_path
-
         new_file = get_switch_file(current_path, mapping, nvim_debug)
-        self._nvim.goto_file(new_file)
+
+        if new_file:
+            if precmd:
+                self._nvim.command(precmd)
+            self._nvim.goto_file(new_file)
+        else:
+            self._nvim.print_message("Could not find a file to switch to")
+
