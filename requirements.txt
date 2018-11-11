@@ -1,0 +1,11 @@
+atomicwrites==1.2.1
+attrs==18.2.0
+greenlet==0.4.15
+more-itertools==4.3.0
+msgpack==0.5.6
+neovim==0.3.0
+pluggy==0.8.0
+py==1.7.0
+pyfakefs==3.5
+pytest==3.10.0
+six==1.11.0
