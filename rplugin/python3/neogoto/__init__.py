@@ -1,7 +1,7 @@
 import pathlib
 import queue
 
-import neovim
+import pynvim
 import os
 
 from .nvim_wrapper import NvimWrapper
@@ -108,46 +108,46 @@ def get_switch_mapping(file_path: pathlib.Path, full_mapping: dict):
     return None
 
 
-@neovim.plugin
+@pynvim.plugin
 class Neogoto:
     def __init__(self, nvim):
         self._nvim = NvimWrapper(nvim)
 
-    @neovim.command(name='NeogotoHeader', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoHeader', sync=True, nargs='?')
     def goto_header(self, args):
         mapping = DEFAULT_MAPPING.get('header')
         self._goto(mapping, nvim_debug=self._get_debug(args))
 
-    @neovim.command(name='NeogotoSource', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSource', sync=True, nargs='?')
     def goto_source(self, args):
         mapping = DEFAULT_MAPPING.get('source')
         self._goto(mapping, nvim_debug=self._get_debug(args))
 
-    @neovim.command(name='NeogotoTest', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoTest', sync=True, nargs='?')
     def goto_test(self, args):
         mapping = DEFAULT_MAPPING.get('test')
         self._goto(mapping, nvim_debug=self._get_debug(args))
 
-    @neovim.command(name='NeogotoSwitch', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSwitch', sync=True, nargs='?')
     def goto_switch(self, args):
         self._switch(args, precmd=None)
 
-    @neovim.command(name='NeogotoSwitchSplitLeft', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSwitchSplitLeft', sync=True, nargs='?')
     def goto_switch_split_left(self, args):
         precmd = 'let cursplitright=&splitright | set nosplitright | vsplit | if cursplitright | set splitright | endif'
         self._switch(args, precmd)
 
-    @neovim.command(name='NeogotoSwitchLeft', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSwitchLeft', sync=True, nargs='?')
     def goto_switch_left(self, args):
         precmd = 'wincmd h'
         self._switch(args, precmd)
 
-    @neovim.command(name='NeogotoSwitchSplitRight', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSwitchSplitRight', sync=True, nargs='?')
     def goto_switch_split_right(self, args):
         precmd = 'let cursplitright=&splitright | set nosplitright | vsplit | wincmd l | if cursplitright | set splitright | endif'
         self._switch(args, precmd)
 
-    @neovim.command(name='NeogotoSwitchRight', sync=True, nargs='?')
+    @pynvim.command(name='NeogotoSwitchRight', sync=True, nargs='?')
     def goto_switch_right(self, args):
         precmd = 'wincmd l'
         self._switch(args, precmd)
