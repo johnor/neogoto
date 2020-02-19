@@ -20,7 +20,7 @@ DEFAULT_MAPPING = {
     },
     'test': {
         'dirs': [
-            'UnitTest', 'UnitTests', 'test', 'UnitTest/Source',
+            'UnitTest', 'UnitTests', 'test', 'UnitTest/Source', 'test/src',
             'UnitTests/Source'
         ],
         'endings': ['cpp', 'c'],
